@@ -1,23 +1,65 @@
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import "./index.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { signupMethod } from "../helpers/constans";
+import { addNewUser } from "../../features/users/usersSlice";
 const SignUp = () => {
-  const signupMethod = [
-    {
-      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2008px-Google_%22G%22_Logo.svg.png",
-      alt: "Google",
-      onClick: "",
-    },
-    {
-      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Apple_logo_grey.svg/1200px-Apple_logo_grey.svg.png",
-      alt: "iCloud",
-      onClick: "",
-    },
-    {
-      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png",
-      alt: "Facebook",
-      onClick: "",
-    },
-  ];
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatePassword, setRepeatePassword] = useState("");
+  const [correctPassword, setCorrectPassword] = useState("");
+
+  const users = useSelector((state) => state.users.users);
+
+  const dispatch = useDispatch();
+
+  const createAccount = (onSubmitEvent) => {
+    onSubmitEvent.preventDefault();
+    const newUser = {
+      firstName,
+      lastName,
+      email,
+      password,
+    };
+
+    const findUser = users.filter((user) => {
+      return user.email === email;
+    });
+
+    if (findUser.length <= 0) {
+      dispatch(addNewUser(newUser));
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setRepeatePassword("");
+    }
+  };
+
+  const onChangeInput = (event, state) => {
+    state(event.target.value);
+  };
+
+  const checkPassword = () => {
+    if (password !== repeatePassword && repeatePassword !== "") {
+      setCorrectPassword("incorrectInput");
+    } else if (
+      password === repeatePassword &&
+      repeatePassword !== "" &&
+      password !== ""
+    ) {
+      setCorrectPassword("");
+    } else if (repeatePassword === "") {
+      setCorrectPassword("");
+    }
+  };
+
+  useEffect(() => {
+    checkPassword();
+  }, [repeatePassword, password]);
 
   return (
     <div className="signup">
@@ -28,7 +70,11 @@ const SignUp = () => {
           своей личной информацией
         </p>
       </div>
-      <form className="signup__form">
+      <form
+        className="signup__form"
+        onSubmit={createAccount}
+        action="/auth/login"
+      >
         <h2 className="signup__title from-title">Создать аккаунт</h2>
         <div className="signup__btns">
           {signupMethod.map((method) => (
@@ -39,26 +85,63 @@ const SignUp = () => {
         </div>
 
         <label className="signup__label">
-          <input className="signup__input" type="text" placeholder="Имя" />
-        </label>
-        <label className="signup__label">
-          <input className="signup__input" type="text" placeholder="Фамилия" />
-        </label>
-        <label className="signup__label">
-          <input className="signup__input" type="email" placeholder="Email" />
-        </label>
-        <label className="signup__label">
           <input
-            className="signup__input "
-            type="password"
-            placeholder="Пароль"
+            required
+            className="signup__input"
+            type="text"
+            placeholder="Имя"
+            onChange={(event) => {
+              onChangeInput(event, setFirstName);
+            }}
+            value={firstName}
           />
         </label>
         <label className="signup__label">
           <input
+            required
             className="signup__input"
-            type="password"
+            type="text"
+            placeholder="Фамилия"
+            onChange={(event) => {
+              onChangeInput(event, setLastName);
+            }}
+            value={lastName}
+          />
+        </label>
+        <label className="signup__label">
+          <input
+            required
+            className="signup__input"
+            type="email"
+            placeholder="Email"
+            onChange={(event) => {
+              onChangeInput(event, setEmail);
+            }}
+            value={email}
+          />
+        </label>
+        <label className="signup__label">
+          <input
+            required
+            className="signup__input "
+            type="text"
+            placeholder="Пароль"
+            onChange={(event) => {
+              onChangeInput(event, setPassword);
+            }}
+            value={password}
+          />
+        </label>
+        <label className="signup__label">
+          <input
+            required
+            className={`signup__input ${correctPassword}`}
+            type="text"
             placeholder="Повторите пароль"
+            onChange={(event) => {
+              onChangeInput(event, setRepeatePassword);
+            }}
+            value={repeatePassword}
           />
         </label>
         <button className="signup__btn signBtn ">зарегистрироваться</button>
@@ -67,7 +150,7 @@ const SignUp = () => {
           <a href="/#">условиями обслуживания , политикой конфиденциальности</a>{" "}
           и <a href="/#">политикой использования файлов cookie.</a>
         </p>
-        <Link className="signup__haveAnAcc" to="/login">
+        <Link className="signup__haveAnAcc" to="/auth/login">
           Уже есть аккаунт
         </Link>
       </form>

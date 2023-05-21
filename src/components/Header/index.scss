@@ -1,0 +1,22 @@
+.header {
+  padding: 15px 0;
+  background-color: #111114;
+  color: #fff;
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &__authLinks {
+    display: flex;
+    gap: 5px;
+  }
+  &__authLink {
+    font-size: 14px;
+    transition: 0.3s;
+    &:hover {
+      color: #4e4e4e;
+      transition: 0.3s;
+    }
+  }
+}

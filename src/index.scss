@@ -21,7 +21,11 @@ body {
   color: #131424;
   font-family: "Montserrat", sans-serif;
 }
-
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
 .from-title {
   font-size: 30px;
 }
@@ -29,10 +33,10 @@ body {
   font-size: 20px;
 }
 .incorrectInput {
-  border: 2px solid red;
+  border: 1px solid red !important;
 }
 .correctInput {
-  border: 2px solid #25d925;
+  border: 1px solid #25d925 !important;
 }
 
 .signBtn {
